@@ -1,0 +1,246 @@
+body{
+    background: linear-gradient(to right, white,rgb(241, 235, 235));
+    display: flex;
+    flex-direction: column; 
+    min-height: 100vh;
+}
+
+a{
+    text-decoration: none;
+}
+
+h3{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#cap{
+    margin-left: 280px;
+}
+
+.header{
+    padding:20px;
+    background-color: rgb(13, 13, 66);
+}
+
+
+.container{
+    position: relative;
+    width: 100%;
+    max-width: 1560px;
+    height: 650px;
+    padding: 0;
+    margin: 0;
+
+}
+#ig{
+    height: 100%;
+    width: 100%;
+    opacity: 0.3;
+}
+
+.card{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    font-weight: bold;
+    background-color: white;
+    opacity: 0.8;
+    border-radius: 0px;
+    padding: 0px;
+    width: 1000px;
+    height: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 200px;
+}
+.card2{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: white;
+    border-radius: 0px;
+    padding: 0px;
+    width: 500px;
+    height: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 330px;
+}
+
+.containerb {
+    width: 100%;
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    justify-content: center;
+    margin-top: 5px;
+    gap: 10px; 
+    padding: 0 20px;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.cardb {
+    width: 100%; 
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(217, 205, 205, 0.7);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: 0; 
+    gap: 15px;
+}
+
+.card-content {
+    padding: 10px;
+    margin: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.cardb img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; 
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.button1{
+    background-color: rgb(13, 13, 66);
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    display: block;
+    font-size: 16px;
+    padding: 10px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.button2{
+    background-color: white;
+    color: black;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    display: block;
+    font-size: 16px;
+    padding: 10px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    cursor: pointer;
+    width: 100%;
+}
+
+#footer{
+    padding-top: 10px;
+    background-color: rgb(13, 13, 66);
+    color: white;
+    margin-top: 50px;
+}
+
+.a1{
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.a2{
+    width: 100%;
+    text-align: center;
+}
+
+hr{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+@media  screen and (max-width:992px) {
+    .dis{
+        font-size: 0px;
+    }  
+    .container{
+        max-width: 900px;
+    }
+    .navbar-brand{
+        font-size:17px
+    }
+    .card{
+        width: 500px;
+        height: 100px;
+        font-size: 25px;
+    }
+    .card2{
+        width: 400px;
+        height: 100px;
+        font-size: 20px;
+    }
+    #cap{
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .a1{
+        padding: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media screen and (max-width:576px) {
+    .dis{
+        font-size: 0px;
+    }  
+    .navbar-brand{
+        font-size:25px
+    }
+    h3{
+        font-size: 35px;
+    }
+    p{
+        font-size:12px
+    }
+    .card{
+        width: 400px;
+        height: 50px;
+        font-size: 16px;
+    }
+    .card2{
+        width: 350px;
+        height: 50px;
+        font-size: 12px;
+    }
+    #cap{
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .a1{
+        padding: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+}
