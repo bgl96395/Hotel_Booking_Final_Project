@@ -5,6 +5,61 @@ body{
     min-height: 100vh;
 }
 
+.container1{
+    margin-top: 50px;
+    flex:1;
+}
+
+.c{
+    color:rgb(67, 67, 139);
+}
+
+.center{
+    text-align: center;
+}
+
+table{
+    max-width: 300px;
+    width:100%;
+    box-shadow: 3px 3px 10px black;
+    border-radius: 10px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th,td{
+    border: 3px solid black;
+    text-align: center;
+}
+
+.d1{
+    border-left: 0px;
+}
+.d2{
+    border-right: 0px;
+}
+.d3{
+    border-top: 0px;
+}
+.d4{
+    border-bottom: 0px;
+}
+
+.grid{
+    display: grid;
+    width:100%;
+    grid-template-columns: repeat(4,1fr);
+    margin-bottom: 50px;
+    gap:20px;
+}
+
+.item{
+    box-shadow: 1px 1px 5px rgb(79, 75, 75);
+    border-radius: 10px;
+    text-align: center;
+    padding:40px;
+}
+
 a{
     text-decoration: none;
 }
@@ -180,6 +235,35 @@ hr{
     margin-right: 20px;
 }
 
+.containerform{
+    width: 30%;
+    flex: 1;
+    padding: 20px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    margin-left: auto;
+    margin-right:auto;
+    border: 3px solid black;
+    border-radius: 10px;
+}
+
+.containerform hr{
+    max-width: 100%;
+}
+
+input,textarea{
+    background-color: transparent;
+    border: none;
+}
+
+.w{
+    width: 100%;
+}
+
+.btn{
+    width: 100%;
+}
+
 @media  screen and (max-width:992px) {
     .dis{
         font-size: 0px;
@@ -208,6 +292,12 @@ hr{
         padding: 10px;
         width: 100%;
         justify-content: space-between;
+    }
+    .grid{
+        grid-template-columns: 1fr 1fr !important; 
+    }
+    .containerform{
+        width: 60% !important;
     }
 }
 
@@ -242,5 +332,14 @@ hr{
         padding: 10px;
         width: 100%;
         justify-content: space-between;
+    }
+    .grid{
+        grid-template-columns: 1fr !important;
+    }
+    .containerform{
+        width: 90% !important;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 10px;
     }
 }
