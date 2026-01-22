@@ -200,6 +200,6 @@ async function delet(){
 
 document.getElementById("deleting").addEventListener("submit",function(e){
     e.preventDefault()
-    delet
+    delet()
 })
 
