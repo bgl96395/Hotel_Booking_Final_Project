@@ -2,15 +2,38 @@ require('dotenv').config()
 const express = require('express')
 const app = express()
 const fs = require('fs')
+const {MongoClient} = require("mongodb")
+const session = require("express-session")
+const bcrypt = require("bcryptjs")
+
+const middleware = (req,res,next)=>{
+  if(req.session.middleware){
+    next()
+  }
+  else{
+    res.redirect("/login")
+  }
+}
+
+app.use(
+  session({
+    secret:"key that will sign cookie",
+    resave:false,
+    saveUninitialized:false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production"
+    }
+  })
+)
+
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-const {Client} = require('pg')
-
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.url}`)
   next()
-});
+})
 
 app.post('/contact', (req, res) => {
   const data = { Firstname: req.body.fname , Lastname: req.body.lname , Email: req.body.email , Message: req.body.comments}
@@ -23,222 +46,132 @@ app.post('/contact', (req, res) => {
   res.send(`<h2 style="text-align:center;margin-top:100px">Thanks, "${req.body.fname} ${req.body.lname}" ! Your message has been received.</h2>`)
 })
 
-app.get('/', (req, res) => {
+app.get("/login",(req,res)=>{
+  res.sendFile(__dirname + "/views/login.html")
+})
+app.get("/register",(req,res)=>{
+  res.sendFile(__dirname + "/views/register.html")
+})
+app.get('/', middleware , (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 })
-app.get('/about', (req, res) => {
+app.get('/about', middleware,(req, res) => {
   res.sendFile(__dirname + '/views/about.html')
 })
-app.get('/contact', (req, res) => {
+app.get('/contact', middleware,(req, res) => {
   res.sendFile(__dirname + '/views/contact.html')
 })
-app.get('/hotels',(req,res)=>{
+app.get('/hotels',middleware,(req,res)=>{
   res.sendFile(__dirname + '/views/hotels.html')
 })
 
 
-app.get('/search', (req,res) => {
-  let q = req.query.q
-  if (q === "about"){
-    res.sendFile(__dirname + '/views/about.html')
-  }
-  else if (q === "home"){
-    res.sendFile(__dirname + '/views/index.html')
-  }
-  else if (q === "contact"){
-    res.sendFile(__dirname + '/views/contact.html')
-  }else if(q === "hotels"){
-    res.sendFile(__dirname + "/views/hotels.html")
-  }
-  else{
-    res.status(400).send("Bad request!")
-  }
-})
-
-app.get('/api/info',(req,res) =>{
-  res.json({
-    application: "Hotel Booking web Applicication",
-    team_members: "Asylbek, Ansar, Dinmuhamed, Bigali",
-    features_used: "express.js , node.js"
-  })
-})
-
-//MongoDB integration
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT 
 const MONGO_URL = process.env.MONGO_URL
 
-const {MongoClient,ObjectId} = require("mongodb")
+const client = new MongoClient(MONGO_URL)
 
-let hotels
-MongoClient.connect(MONGO_URL).then(
-    client=>{
+async function MongoDB_connect() {
+    try{
+        await client.connect()
         console.log("MongoDB connected")
-        const db = client.db("HotelBook")
-        hotels = db.collection("hotels")
-        app.listen(PORT,()=>console.log("Server running on port http://localhost:3000"))
+    }catch(e){
+        console.log("Error: ",e)
     }
-)
+}
+MongoDB_connect()
 
-app.get("/api/hotels", async (req,res)=>{
-    const { country, minPrice, sort, fields } = req.query
+const database = client.db("HotelBook")
+const collection = database.collection("hotels")
+const user_collection = database.collection("users")
 
-  let filter = {}
-  if (country) {
-    filter.country = country
+const hotel_route = require("./routes/routes")
+const hotel_handler = require("./handlers/hotels_handler")
+
+hotel_handler.set_collection(collection)
+
+app.use(hotel_route)
+
+app.post("/login",async (req,res)=>{
+  try{
+    const {email,password} = req.body
+
+    if(!email || !password){
+      return res.redirect("/login?error=Invalid%20credentials")
+    }
+
+    const user = await user_collection.findOne({email})
+    if(!user){
+      return res.redirect("/login?error=Invalid%20credentials")
+    }
+
+    const is_match = await bcrypt.compare(password, user.password)
+
+    if (!is_match){
+      return res.redirect("/login?error=Invalid%20credentials")
+    }
+
+    req.session.user = {
+      id: user._id,
+      user_name: user.user_name,
+      role: user.role
+    }
+
+    req.session.middleware = true
+    res.redirect("/")
   }
-
-  if (minPrice) {
-    const min_price = Number(minPrice)
-    if (isNaN(min_price)) {
-      return res.status(400).json({
-        error: "Invalid minPrice",
-      });
-    }
-    filter.price_per_night = { $gte: min_price }
+  catch{
+    res.status(500).send("Server Internal Error")
   }
-
-  let sorting = {};
-  if (sort) {
-    if (sort === "price") {
-      sorting.price_per_night = 1;
-    } else if (sort === "priceDesc") {
-      sorting.price_per_night = -1;
-    } else {
-      return res.status(400).json({
-        error: "Invalid sort value",
-      });
-    }
-  }
-
-  let chosen_fields = {}
-  if (fields) {
-    const displaying_fields = fields.split(",")
-    for (let i = 0; i < displaying_fields.length; i++) {
-      let field = displaying_fields[i]
-      chosen_fields[field] = 1
-    }
-  }
-
-  try {
-    let filtered_hotels = hotels.find(filter)
-
-    if (Object.keys(sorting).length > 0) {
-      filtered_hotels = filtered_hotels.sort(sorting)
-    }
-
-    if (Object.keys(chosen_fields).length > 0) {
-      filtered_hotels = filtered_hotels.project(chosen_fields)
-    }
-
-    const list = await filtered_hotels.toArray()
-
-    res.status(200).json({
-        count: list.length,
-        hotels: list,
-    })
-  } catch (err) {
-    res.status(500).json({ error: "Server error" })
-  }  
 })
 
-app.get("/api/hotels/:id", async (req,res)=>{
-    const hotel_id = req.params.id
-    if(!ObjectId.isValid(hotel_id)){
-        return res.status(400).json({
-            error:"Invalid id"
-        })
+app.post("/register", async (req,res)=>{
+  try{
+    const {user_name,email,password} = req.body
+
+    if(!user_name || !email || !password){
+      return res.redirect("/register?error=Invalid%20credentials")
     }
-    const hotel = await hotels.findOne({_id: new ObjectId(hotel_id)})
-    if (!hotel){
-        return res.status(404).json({
-            error:"Hotel not found"
-        })
+    
+    let user = await user_collection.findOne({user_name: user_name})
+    let email_of = await user_collection.findOne({email: email})
+    if(user || email_of){
+      return res.redirect("/register?error=Invalid%20credentials")
     }
-    res.status(200).json(hotel)
+
+    const hashed_password = await bcrypt.hash(password,12)
+
+    await user_collection.insertOne({user_name,email,password: hashed_password,role:"user"})
+    res.redirect("/login?success=Registration%20successfully%20done")
+  }catch{
+    res.status(500).send("Server Internal Error")
+  }
 })
 
-app.post("/api/hotels",async(req,res)=>{
-    const {name,price_per_night,country} = req.body
-    if (!name || typeof price_per_night !== "number" || !country){
-        return res.status(400).json({
-            error:"Missing or invalid fields"
-        })
-    }
-    await hotels.insertOne({name,price_per_night,country})
-    res.status(201).json({
-        message:"Product created"
+app.post("/logout",(req,res)=>{
+  try{
+    req.session.destroy((err)=>{
+      if(err) throw err
+      res.redirect("/login")
     })
+  }catch{
+    res.status(500).send("Server Internal Error")
+  }
 })
 
-
-app.put("/api/hotels/:id", async (req,res)=>{
-  const hotel_id = req.params.id
-  const {name,price_per_night,country} = req.body
-
-  if(!ObjectId.isValid(hotel_id)){
-    return res.status(400).json({
-      error:"Invalid id"
-    })
+app.get('/api/user', (req, res) => {
+  if (req.session.user && req.session.user.role) {
+    res.json({ role: req.session.user.role });
+  } else {
+    res.json({ role: null });
   }
+});
 
-  if (!name && !price_per_night && !country){
-    return res.status(400).json({
-      error:"No fields to update"
-    })
-  }
-
-  let updating_fields={}
-  if(name){
-    updating_fields.name=name
-  }
-  if(typeof price_per_night ==="number"){
-    updating_fields.price_per_night=price_per_night
-  }
-  if(country){
-    updating_fields.country=country
-  }
-
-  const result = await hotels.updateOne(
-    {_id: new ObjectId(hotel_id)},
-    {$set: updating_fields}
-  )
-
-  if(result.matchedCount===0){
-    return res.status(404).json({
-      error:"Hotel not found"
-    })
-  }
-  
-  res.status(200).json({
-    message:"Updated"
-  })
-})
-
-app.delete("/api/hotels/:id", async (req,res)=>{
-  const hotel_id = req.params.id
-
-  if(!ObjectId.isValid(hotel_id)){
-    return res.status(400).json({
-      error:"Invalid id"
-    })
-  }
-
-  const result = await hotels.deleteOne({_id: new ObjectId(hotel_id)})
-
-  if (result.deletedCount === 0){
-    return res.status(404).json({
-      error:"Hotel not found"
-    })
-  }
-
-  res.status(200).json({
-    message:"Deleted"
-  })
-})
-
-
-// handling unknown pages
 app.use((req, res) => {
   res.status(404).sendFile(__dirname + '/views/404.html')
+})
+
+app.listen(PORT,()=>{
+  console.log(`Server running on http://localhost:${PORT}`)
 })
 

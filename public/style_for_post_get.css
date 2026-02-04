@@ -1,22 +1,12 @@
 .displaying{
     margin-top: 50px;
-    width: 90%;
-    display:flex;
-    flex-direction: row;
     justify-content: space-between;
     margin-left: auto;
     margin-right: auto;
-}
-
-#filter{
-    width: 28%;
-    border: 3px solid black;
-}
-
-#res1{
     width: 70%;
     border: 3px solid black;
     padding: 10px;
+    margin-bottom: 50px;
 }
 
 #result{
@@ -58,6 +48,7 @@ input{
 
 .api{
     margin-top: 100px;
+    margin-bottom: 50px;
     width: 800px;
     margin-left: auto;
     margin-right: auto;

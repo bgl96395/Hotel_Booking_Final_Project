@@ -39,33 +39,23 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#"> Hotels </a>
                 </li>
+                <li class="dis">
+                    <a class="nav-link" href="#"> | </a>
+                </li>
+                <li class="nav-item">
+                    <form action="/logout" method="POST" style="display:inline;">
+                        <button type="submit" class="nav-link btn btn-link" style="padding: 0; border: 1px solid black;border-radius: 5px; background: none; margin-top: 7px;padding: 3px; border-color: white;">
+                            <i class="fa-regular fa-user"></i> Logout
+                        </button>
+                    </form>
+                </li>
             </ul>
         </div>
     </nav> 
 
     <div class="displaying">    
-        <div id="filter">
-            <h2 id="filt">Filter</h2>
-            <form id="form">
-                Country
-                <input type="text" id="by_country">
-                Sort by price
-                <select id="by_price">
-                    <option></option>
-                    <option>Asceding</option>
-                    <option>Desceding</option>
-                </select>
-                Fields
-                <input type="text" id="fields">
-                Minimum price
-                <input type="number" name="minPrice" id="minp"> 
-                <button id="filter">Filter</button> 
-            </form>
-        </div>
-        <div id = "res1"> 
-            <div id="searching"><input type="text" id="for_search" placeholder="id:"><button id="for_search_2">Search</button></div>
-            <div id="result"></div> 
-        </div>
+        <div id="searching"><input type="text" id="for_search" placeholder="id or name:"><button id="for_search_2">Search</button></div>
+        <div id="result"></div> 
     </div>
 
     <div class="api">
@@ -76,12 +66,28 @@
                 <input type="text" id="name">
             </label>
             <label>
-                Price per night:<br>
-                <input type="number" id="price">
+                Address:<br>
+                <input type="text" id="address">
+            </label>
+            <label>
+                City:<br>
+                <input type="text" id="city">
             </label>
             <label>
                 Country:<br>
                 <input type="text" id="country">
+            </label>
+            <label>
+                Stars:<br>
+                <input type="number" id="stars">
+            </label>
+            <label>
+                Price per night:<br>
+                <input type="number" id="price">
+            </label>
+            <label>
+                description:<br>
+                <input type="text" id="description">
             </label>
             <button class="button_hotel">Create</button>
         </form>
@@ -94,12 +100,24 @@
             <label>New name:<br>
                 <input type="text" id="update_name">
             </label>
-            <label>New price per night:<br>
-                <input type="number" id="update_price">
+            <label>New address:<br>
+                <input type="text" id="update_address">
+            </label>
+            <label>New city:<br>
+                <input type="text" id="update_city">
             </label>
             <label>New country:<br>
                 <input type="text" id="update_country">
              </label>
+             <label>Update stars:<br>
+                <input type="number" id="update_stars">
+            </label>
+             <label>New price per night:<br>
+                <input type="number" id="update_price">
+            </label>
+            <label>New description:<br>
+                <input type="text" id="update_description">
+            </label>
             <button class="button_hotel">Update</button>
         </form>
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Platform</title>
+    <link rel="stylesheet" href="/Authorization.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="reg_container">
+        <form action="/register" method="POST">
+            <h1>Registration</h1><br><br>
+            <i class="fa-regular fa-user"></i><input type="text" id="user_name" name="user_name" placeholder="enter your name" required><hr><br>
+            <i class="fa-regular fa-envelope"></i><input type="email" id="email" name="email" placeholder="enter your email" required><hr><br>
+            <i class="fa-solid fa-lock"></i><input type="password" id="password" name="password" placeholder="create a password" required><hr><br>
+            <button id="register">Register</button><br><br>
+            <p id="ss">Already have an account?<a href="/login"><b id="login_btn">login</b></a></p>
+        </form>
+    </div>
+    <script> 
+        const url_params = new URLSearchParams(window.location.search)
+        const error = url_params.get("error")
+        if (error){
+            alert(decodeURIComponent(error))
+        }
+        const success = url_params.get("success")
+    </script>
+</body>
+</html>

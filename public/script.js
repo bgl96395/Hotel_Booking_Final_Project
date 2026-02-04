@@ -1,25 +1,37 @@
-//GET ALL HOTELS
+async function check_role(){
+    const res = await fetch("/api/user", { credentials: 'include' });
+    const data = await res.json();
+    console.log("User role from server:", data.role); // для отладки
+
+    if(data.role !== "admin"){
+        document.getElementsByClassName("api")[0].style.display = "none";
+    }
+}
+check_role();
+
+
 async function show(){
   const res = await fetch("/api/hotels")
   const data = await res.json()
 
+  console.log(data)
+
   const result = document.getElementById("result")
   result.innerHTML = ""
 
-  data.hotels.forEach(q => {
+  data.forEach(q => {
     const div = document.createElement("div")
-    div.innerHTML = `id:<b> ${q._id}</b> ----> <b>${q.name}</b> | price per night: <b>${q.price_per_night}</b> | country: <b>${q.country}</b> <hr>`
+    div.innerHTML = `<h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}</b> <br> description: <b>${q.description}</b>  <hr>`
     result.appendChild(div)
   })
 }
 
 show()
-//----------------------------------------------------------------------------
-//GET HOTEL BY ID
-async function show_by_id(){
-  const val = document.getElementById("for_search").value.trim().toLowerCase()
+
+async function show_by_id_or_name(){
+  const val = document.getElementById("for_search").value
   if(val === ""){
-    show();
+    show()
     return
   }
   const res = await fetch("/api/hotels")
@@ -28,10 +40,10 @@ async function show_by_id(){
   const result = document.getElementById("result")
   result.innerHTML = ""
 
-  data.hotels.forEach(q => {
-    if(val === q._id){
+  data.forEach(q => {
+    if(val === q._id || val === q.name){
       const div = document.createElement("div")
-      div.innerHTML = `id:<b> ${q._id}</b> ----> <b>${q.name}</b> | price per night: <b>${q.price_per_night}</b> | country: <b>${q.country}</b> <hr>`
+      div.innerHTML = `<h3>${q.name}</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country} <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}</b> <br> description: <b>${q.description}</b>  <hr>`
       result.appendChild(div)
     }
   })
@@ -41,144 +53,88 @@ async function show_by_id(){
   }
 }
 
-document.getElementById("for_search_2").onclick = show_by_id
-//----------------------------------------------------------------------------
-//FILTER HOTELS AND DISPLAY
-async function filtered() {
-    
+document.getElementById("for_search_2").onclick = show_by_id_or_name
 
-    const by_country = document.getElementById("by_country").value
-    const sort = document.getElementById("by_price").value
-    const by_fields = document.getElementById("fields").value
-    const by_min_price = document.getElementById("minp").value
+async function create() { 
+    const name = document.getElementById("name").value 
+    const address = document.getElementById("address").value 
+    const city = document.getElementById("city").value 
+    const country = document.getElementById("country").value 
+    const stars = Number(document.getElementById("stars").value) 
+    const price_per_night = Number(document.getElementById("price").value) 
+    const description = document.getElementById("description").value
 
-    const params = new URLSearchParams()
-
-    if (by_country) {
-        params.append("country", by_country)
-    }
-
-    if (sort) {
-        if (sort === "Asceding") {
-            params.append("sort", "price")
-        } else{
-            params.append("sort", "priceDesc")
-        }
-    }
-
-    if (by_fields) {
-        params.append("fields", by_fields)
-    }
-
-    if (by_min_price) {
-        params.append("minPrice", by_min_price)
-    }
-
-    const res = await fetch(`/api/hotels?`+params)
-    const data = await res.json()
-
-    const result = document.getElementById("result")
-    result.innerHTML = ""
-
-    if (!data.hotels || data.hotels.length === 0) {
-        result.innerHTML = "Hotels not found"
-        return;
-    }
-
-    data.hotels.forEach(hotel => {
-
-        const div = document.createElement("div")
-        if(hotel.name !== undefined){
-            if (hotel.price_per_night !== undefined){
-                if(hotel.country !== undefined){
-                    div.innerHTML = `<b>${hotel.name}</b> | price per night: <b>${hotel.price_per_night}</b> | country: <b>${hotel.country}</b> <hr>` 
-                }
-                else{
-                    div.innerHTML = `<b>${hotel.name}</b> | price per night: <b>${hotel.price_per_night}</b> <hr>`
-                }
-            }
-            else{
-                if(hotel.country !== undefined){
-                    div.innerHTML = `<b>${hotel.name}</b> | country: <b>${hotel.country}</b> <hr>`
-                }
-            }
-        }
-        else{
-            alert("name is required")
-            return
-        }
-        result.appendChild(div)
+    const res = await fetch("/api/hotels", {
+        method: "POST", 
+        credentials: 'include',
+        headers: { 
+            "Content-Type": "application/json" 
+        }, 
+        body: JSON.stringify({ name, address, city, country, stars, price_per_night, description }) 
     })
+
+    if (res.ok) { 
+        alert("Hotel created successfully") 
+    } 
+    else { 
+        alert("Failed to create hotel") 
+    } 
 }
 
-document.getElementById("form").addEventListener("submit", function(e){
-    e.preventDefault()
-    filtered()
-});
-
-//----------------------------------------------------------------------------
-//ADD HOTEL
-async function create(){
-    const name = document.getElementById("name").value
-    const price_per_night = Number(document.getElementById("price").value)
-    const country = document.getElementById("country").value
-
-    const res = await fetch("/api/hotels",{
-        method: "POST",
-        headers: {
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-            name: name,
-            price_per_night: price_per_night,
-            country: country
-        })
-    })
-    
-    const data = await res.json()
-    alert("Hotel created successfully")
-}
-
-document.getElementById("creating").addEventListener("submit",function(e){
-    e.preventDefault()
-    create()
+document.getElementById("creating").addEventListener("submit", function (e) { 
+    e.preventDefault() 
+    create() 
 })
 
-//----------------------------------------------------------------------------
-//UPDATE HOTEL
-async function update(){
-    const id = document.getElementById("update_id").value
-    const name = document.getElementById("update_name").value
-    const price_per_night = document.getElementById("update_price").value
-    const country = document.getElementById("update_country").value
+async function update() { 
+    const id = document.getElementById("update_id").value 
+    const name = document.getElementById("update_name").value 
+    const address = document.getElementById("update_address").value 
+    const city = document.getElementById("update_city").value 
+    const country = document.getElementById("update_country").value 
+    const stars = document.getElementById("update_stars").value 
+    const price_per_night = document.getElementById("update_price").value 
+    const description = document.getElementById("update_description").value
 
-    const body = {}
-    if(name){
-        body.name = name
+    const body = {} 
+    if (name) {
+        body.name = name 
+    } 
+    if (address) { 
+        body.address = address 
+    } 
+    if (city) {
+         body.city = city 
+    } 
+    if (country) { 
+        body.country = country 
+    } if (stars) { 
+        body.stars = Number(stars) 
+    } if (price_per_night) { 
+        body.price_per_night = Number(price_per_night) 
+    } if (description) { 
+        body.description = description 
     }
-    if(price_per_night){
-        body.price_per_night = Number(price_per_night)
-    }
-    if(country){
-        body.country = country
-    }
 
-    if(Object.keys(body).length === 0){
-        alert("Atleast one field must be updated")
-        return
+    if (Object.keys(body).length === 0) { 
+        alert("At least one field must be updated") 
+        return 
     }
 
+    const res = await fetch(`/api/hotels/${id}`
+        , { 
+        method: "PUT", 
+        credentials: 'include',
+        headers: { 
+            "Content-Type": "application/json" 
+        }, body: JSON.stringify(body) })
 
-    const res = await fetch(`/api/hotels/${id}`,{
-        method: "PUT",
-        headers: {
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify(body)
-    })
-
-    const data = await res.json()
-    alert("Hotel updated successfully")
+    if (res.ok) { 
+        alert("Hotel updated successfully") 
+    } 
+    else { 
+        alert("Failed to update hotel") 
+    } 
 }
 
 document.getElementById("updating").addEventListener("submit",function(e){
@@ -186,13 +142,12 @@ document.getElementById("updating").addEventListener("submit",function(e){
     update()
 })
 
-//----------------------------------------------------------------------------
-//DELETE HOTEL
 async function delet(){
     const id = document.getElementById("delete_id").value
 
     const res = await fetch(`/api/hotels/${id}`,{
-        method:"DELETE"
+        method:"DELETE",
+        credentials: 'include'
     })
     const data = await res.json()
     alert("HOTEL deleted successfully")
@@ -202,4 +157,3 @@ document.getElementById("deleting").addEventListener("submit",function(e){
     e.preventDefault()
     delet()
 })
-

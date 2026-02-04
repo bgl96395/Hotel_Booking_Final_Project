@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Platform</title>
+    <link rel="stylesheet" href="/Authorization.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="log_container">
+        <form action="/login" method="POST">
+            <h1>Login</h1><br><br>
+            <i class="fa-regular fa-envelope"></i><input type="email" id="email" name="email" placeholder="enter your email" required><hr><br>
+            <i class="fa-solid fa-lock"></i><input type="password" id="password" name="password" placeholder="enter your password" required><hr><br>
+            <button id="login">Login</button><br><br>
+            <p id="ss">don't have an account?<a href="/register"><b id="signup_btn">Signup now</b></a></p>
+        </form>
+    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search)
+        const error = params.get('error')
+        if (error) {
+            alert(decodeURIComponent(error))
+        }
+        const success = params.get('success')
+        if (success) {
+            alert(decodeURIComponent(success))
+    }
+    </script>
+</body>
+</html>

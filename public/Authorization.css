@@ -1,0 +1,75 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(
+        135deg,
+      #cfe8ef 0%,
+      #e6f2f5 40%,
+      #f1f4f5 100%
+    )
+}
+
+.reg_container{
+    width: 400px;
+    height: 500px;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.log_container{
+    width: 400px;
+    height: 380px;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+input{
+    margin-left: 10px;
+    width: 90%;
+    border: 0px;
+    height: 30px;
+}
+
+#login{
+    border-radius: 5px;
+    background-color: rgb(42, 99, 244);
+    border: 0px;
+    color: white;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+}
+
+#register{
+    border-radius: 5px;
+    background-color: rgb(42, 99, 244);
+    border: 0px;
+    color: white;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+}
+
+a{
+    text-decoration: none;
+}
+
+#signup_btn{
+    color: rgb(42, 99, 244);
+}
+
+#login_btn{
+    color: rgb(42, 99, 244);
+}
+
+#ss{
+    text-align: center;
+}
