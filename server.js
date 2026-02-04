@@ -4,7 +4,7 @@ const app = express()
 const fs = require('fs')
 const { MongoClient } = require("mongodb")
 const session = require("express-session")
-const MongoStore = require('connect-mongo')  // Правильный импорт
+const MongoStore = require('connect-mongo')  
 const bcrypt = require("bcryptjs")
 
 const middleware = (req, res, next) => {
@@ -15,19 +15,19 @@ const middleware = (req, res, next) => {
   }
 }
 
-// Подключаем session с хранением в MongoDB
 app.use(
   session({
     secret: "key that will sign cookie",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URL,  // URL из .env
-      ttl: 14 * 24 * 60 * 60 // время жизни сессии (14 дней)
+      mongoUrl: process.env.MONGO_URL,
+      collectionName: 'sessions',
     }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production"
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 // например, 1 день
     }
   })
 )
