@@ -6,12 +6,11 @@ const {MongoClient} = require("mongodb")
 const session = require("express-session")
 const bcrypt = require("bcryptjs")
 
-const middleware = (req,res,next)=>{
-  if(req.session.middleware){
+const middleware = (req, res, next) => {
+  if (req.session && req.session.user) {
     next()
-  }
-  else{
-    res.redirect("/login")
+  } else {
+    res.redirect("/login");
   }
 }
 
@@ -20,9 +19,10 @@ app.use(
     secret:"key that will sign cookie",
     resave:false,
     saveUninitialized:false,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production"
+      secure: process.env.NODE_ENV === "production" && process.env.USE_HTTPS === "true"
     }
   })
 )
