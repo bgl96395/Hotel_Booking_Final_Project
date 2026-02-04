@@ -5,6 +5,8 @@ const fs = require('fs')
 const {MongoClient} = require("mongodb")
 const session = require("express-session")
 const bcrypt = require("bcryptjs")
+const MongoStore = require('connect-mongo');
+
 
 const middleware = (req, res, next) => {
   if (req.session && req.session.user) {
