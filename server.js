@@ -1,12 +1,11 @@
 require('dotenv').config()
 const express = require('express')
+const session = require("express-session")
 const app = express()
 const fs = require('fs')
 const {MongoClient} = require("mongodb")
-const session = require("express-session")
 const bcrypt = require("bcryptjs")
 const MongoStore = require('connect-mongo');
-
 
 const middleware = (req, res, next) => {
   if (req.session && req.session.user) {
@@ -18,16 +17,15 @@ const middleware = (req, res, next) => {
 
 app.use(
   session({
-    secret:"key that will sign cookie",
-    resave:false,
-    saveUninitialized:false,
+    secret: "key that will sign cookie",
+    resave: false,
+    saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production" && process.env.USE_HTTPS === "true"
+      secure: false 
     }
-  })
-)
+}));
 
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
