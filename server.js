@@ -5,7 +5,6 @@ const app = express()
 const fs = require('fs')
 const {MongoClient} = require("mongodb")
 const bcrypt = require("bcryptjs")
-const MongoStore = require('connect-mongo');
 
 const middleware = (req, res, next) => {
   if (req.session && req.session.user) {
@@ -15,17 +14,16 @@ const middleware = (req, res, next) => {
   }
 }
 
-app.use(
-  session({
-    secret: "key that will sign cookie",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
-    cookie: {
-      httpOnly: true,
-      secure: false 
-    }
+const MongoStore = require('connect-mongo')(session);
+
+app.use(session({
+  secret: "key",
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({ url: process.env.MONGO_URL }),
+  cookie: { httpOnly: true, secure: false }
 }));
+
 
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
