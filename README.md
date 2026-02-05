@@ -54,7 +54,7 @@ Web application for managing hotel bookings with complete CRUD functionality and
 
 ## Deployment
 
-* link: https://hotel-booking-final-project-1.onrender.com
+* link: https://hotel-booking-final-project-2.onrender.com
 
 - Set environment variables (PORT, MONGO_URI, SESSION_SECRET, NODE_ENV=production) in your hosting platform dashboard.
 - Connect to a remote MongoDB cluster.
