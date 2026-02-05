@@ -16,7 +16,7 @@ const middleware = (req, res, next) => {
 }
 
 app.use(session({
-  secret:'mysecret',
+  secret: process.env.SESSION_SECRET || 'mysecret', // Лучше использовать из .env
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
@@ -26,6 +26,7 @@ app.use(session({
   cookie: { 
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax', // ← ЭТО ВАЖНО!
     maxAge: 1000 * 60 * 60 * 24       
   }
 }));
