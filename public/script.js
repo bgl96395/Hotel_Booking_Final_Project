@@ -16,7 +16,6 @@ async function show(){
     result.innerHTML = ""
 
     data.forEach((q,index) => {
-        const button = document.getElementById("show_more");
         let image
         if(q.image){
             image = q.image
@@ -82,9 +81,22 @@ async function show_by_id_or_name(){
 
   data.forEach(q => {
     if(val === q._id || val === q.name){
-      const div = document.createElement("div")
-      div.innerHTML = `<h3>${q.name}</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country} <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}</b> <br> description: <b>${q.description}</b>  <hr>`
-      result.appendChild(div)
+        let image
+        if(q.image){
+            image = q.image
+        }
+        else{
+            image = "/images/default.avif"
+        }
+        const div = document.createElement("div")
+        div.classList.add("hotel_card")
+        div.innerHTML = `
+            <div class="for_img"><img src=${image}></div>
+            <div class="for_data"><h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}$</b> <br> description: <b>${q.description}</b> </div>
+        `
+        result.appendChild(div)
+        const hr = document.createElement("hr")
+        result.appendChild(hr)
     }
   })
 
