@@ -1,32 +1,72 @@
 async function check_role(){
-    const res = await fetch("/api/user", { credentials: 'include' });
-    const data = await res.json();
-    console.log("User role from server:", data.role); // для отладки
-
+    const res = await fetch("/api/user", { credentials: 'include' })
+    const data = await res.json()
     if(data.role !== "admin"){
-        document.getElementsByClassName("api")[0].style.display = "none";
+        document.getElementsByClassName("api")[0].style.display = "none"
     }
 }
-check_role();
-
+check_role()
 
 async function show(){
-  const res = await fetch("/api/hotels")
-  const data = await res.json()
 
-  console.log(data)
+    const res = await fetch("/api/hotels")
+    const data = await res.json()
 
-  const result = document.getElementById("result")
-  result.innerHTML = ""
+    const result = document.getElementById("result")
+    result.innerHTML = ""
 
-  data.forEach(q => {
-    const div = document.createElement("div")
-    div.innerHTML = `<h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}</b> <br> description: <b>${q.description}</b>  <hr>`
-    result.appendChild(div)
-  })
+    data.forEach((q,index) => {
+        const button = document.getElementById("show_more");
+        let image
+        if(q.image){
+            image = q.image
+        }
+        else{
+            image = "/images/default.avif"
+        }
+        const div = document.createElement("div")
+        div.classList.add("hotel_card")
+        div.innerHTML = `
+            <div class="for_img"><img src=${image}></div>
+            <div class="for_data"><h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}$</b> <br> description: <b>${q.description}</b> </div>
+        `
+        result.appendChild(div)
+        const hr = document.createElement("hr")
+        result.appendChild(hr)
+        if(index > 2){
+            div.style.display = "none"
+            hr.style.display = "none"
+        }
+    })
 }
 
-show()
+
+show();
+
+const button = document.getElementById("show_more")
+button.addEventListener("click", () => {
+    const hidden_div = document.querySelectorAll("#result .hotel_card")
+    const hidden_hr = document.querySelectorAll("#result hr")
+
+    if (button.textContent === "Show more") {
+        hidden_div.forEach(element => element.style.display = "flex")
+        hidden_hr.forEach(hr => hr.style.display = "block")
+        button.textContent = "Hide"
+    } else {
+        hidden_div.forEach((element, index) => {
+            if (index > 2) {
+                element.style.display = "none"
+            }
+        })
+        hidden_hr.forEach((hr, index) => {
+            if (index > 2) {
+                hr.style.display = "none"
+            }
+        })
+        button.textContent = "Show more"
+    }
+})
+
 
 async function show_by_id_or_name(){
   const val = document.getElementById("for_search").value

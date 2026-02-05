@@ -124,13 +124,11 @@ app.post("/login", async (req, res) => {
 
     req.session.save((err) => {
       if (err) {
-        console.error("Session save error:", err)
         return res.status(500).send("Server Internal Error")
       }
       res.redirect("/")
     })
   } catch (err) {
-    console.error(err)
     res.status(500).send("Server Internal Error")
   }
 })

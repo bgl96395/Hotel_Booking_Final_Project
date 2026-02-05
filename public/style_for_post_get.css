@@ -5,12 +5,44 @@
     margin-right: auto;
     width: 70%;
     border: 3px solid black;
-    padding: 10px;
     margin-bottom: 50px;
+    border-radius: 10px;
 }
 
 #result{
+    display: flex;
+    flex-direction: column;
     padding: 10px;
+    width: 100%;
+    gap:10px
+}
+
+hr{
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.hotel_card{
+    display: flex;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.for_img{
+    max-width: 30%;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.for_data{
+    max-width: 70%;
+}
+
+img{
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px;
 }
 
 #searching{
@@ -20,12 +52,22 @@
 }
 
 #for_search{
-    width: 93%
+    width: 93%;
+    border-bottom: 2px solid black;
+    border-top-left-radius: 10px;
 }
 
 #for_search_2{
     padding: 2px;
     width: 7%;
+    border-top-right-radius: 5px;
+}
+
+#show_more{
+    width: 100%;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    height: 30px;
 }
 
 #form{
