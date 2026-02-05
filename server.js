@@ -4,7 +4,7 @@ const app = express()
 const fs = require('fs')
 const { MongoClient } = require("mongodb")
 const session = require("express-session")
-const MongoStore = require('connect-mongo')  
+const MongoStore = require('connect-mongo').default;  
 const bcrypt = require("bcryptjs")
 
 const middleware = (req, res, next) => {
@@ -15,22 +15,20 @@ const middleware = (req, res, next) => {
   }
 }
 
-app.use(
-  session({
-    secret: "key that will sign cookie",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URL,
-      collectionName: 'sessions',
-    }),
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 // например, 1 день
-    }
-  })
-)
+app.use(session({
+  secret:'mysecret',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,     
+    collectionName: 'sessions'           
+  }),
+  cookie: { 
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 1000 * 60 * 60 * 24       
+  }
+}));
 
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
@@ -129,7 +127,6 @@ app.post("/login", async (req, res) => {
 
     req.session.middleware = true
 
-    // Явно сохраняем сессию, чтобы избежать проблем с асинхронностью
     req.session.save((err) => {
       if (err) {
         console.error("Session save error:", err)
