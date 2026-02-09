@@ -1,11 +1,14 @@
+document.addEventListener("DOMContentLoaded", () => {
+    check_role()
+})
+
 async function check_role(){
     const res = await fetch("/api/user", { credentials: 'include' })
-    const data = await res.json()
-    if(data.role !== "admin"){
+    const user = await res.json()
+    if (user.role.trim() !== "admin") {
         document.getElementsByClassName("api")[0].style.display = "none"
     }
 }
-check_role()
 
 async function show(){
 
