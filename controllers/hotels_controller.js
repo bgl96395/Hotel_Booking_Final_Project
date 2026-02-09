@@ -1,13 +1,9 @@
 const { ObjectId } = require("mongodb")
-
-let collection
-exports.set_collection = (col) => {
-  collection = col
-}
+const hotel_collection = require("../models/hotel_model")
 
 exports.get_hotels = async (req,res)=>{
   try{
-    const hotel = await collection.find().toArray()
+    const hotel = await hotel_collection().find().toArray()
     res.status(200).json(hotel)
   }catch{
     res.status(500).json({
@@ -24,7 +20,7 @@ exports.get_hotel_by_id =  async (req,res)=>{
             error:"Invalid id"
         })
     }
-    const hotel = await collection.findOne({_id: new ObjectId(hotel_id)})
+    const hotel = await hotel_collection().findOne({_id: new ObjectId(hotel_id)})
     if (!hotel){
         return res.status(404).json({
             error:"Hotel not found"
@@ -46,7 +42,7 @@ exports.create_hotel = async(req,res)=>{
               error:"Missing or invalid fields"
           })
       }
-      await collection.insertOne({name,address,city,country,stars,price_per_night,description})
+      await hotel_collection().insertOne({name,address,city,country,stars,price_per_night,description})
       res.status(201).json({
           message:"Product created"
       })
@@ -97,7 +93,7 @@ exports.update_hotel =  async (req,res)=>{
       updating_fields.description = description
     }
 
-    const result = await collection.updateOne({_id: new ObjectId(hotel_id)},{$set: updating_fields})
+    const result = await hotel_collection().updateOne({_id: new ObjectId(hotel_id)},{$set: updating_fields})
 
     if(result.matchedCount===0){
       return res.status(404).json({
@@ -125,7 +121,7 @@ exports.delete_hotel = async (req,res)=>{
       })
     }
 
-    const result = await collection.deleteOne({_id: new ObjectId(hotel_id)})
+    const result = await hotel_collection().deleteOne({_id: new ObjectId(hotel_id)})
 
     if (result.deletedCount === 0){
       return res.status(404).json({
