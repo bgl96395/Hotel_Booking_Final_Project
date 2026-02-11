@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let bookings_url 
     if(user.role === "admin"){
       bookings_url="/api/bookings/all"
+      document.getElementById("prev").textContent = "Bookings"
     }
     else{
       bookings_url = "/api/bookings/my"
