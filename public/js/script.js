@@ -5,32 +5,49 @@ document.addEventListener("DOMContentLoaded", () => {
 async function check_role(){
     const res = await fetch("/api/user", { credentials: 'include' })
     const user = await res.json()
-    if (user.role.trim() !== "admin") {
+    if (user.role !== "admin") {
         document.getElementsByClassName("api")[0].style.display = "none"
     }
 }
 
-async function show(){
-
+async function show(filters = {}) {
     const res = await fetch("/api/hotels")
-    const data = await res.json()
+    let data = await res.json()
+
+    if (filters.country) {
+        data = data.filter(h => h.country.includes(filters.country))
+    }
+    if (filters.stars) {
+        data = data.filter(h => h.stars === Number(filters.stars))
+    }
+
+    if (filters.priceSort === "asc") {
+        data.sort((a, b) => a.price_per_night - b.price_per_night)
+    } else if (filters.priceSort === "desc") {
+        data.sort((a, b) => b.price_per_night - a.price_per_night)
+    }
 
     const result = document.getElementById("result")
     result.innerHTML = ""
 
     data.forEach((q,index) => {
-        let image
-        if(q.image){
-            image = q.image
-        }
-        else{
-            image = "/images/default.avif"
-        }
+        const image = q.image || "/images/default.avif"
         const div = document.createElement("div")
         div.classList.add("hotel_card")
         div.innerHTML = `
-            <div class="for_img"><img src=${image}></div>
-            <div class="for_data"><h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}$</b> <br> description: <b>${q.description}</b> </div>
+            <div class="for_img">
+                <img src="${image}" alt="${q.name}" style="cursor:pointer" onclick="window.location.href='/hotel_page?id=${q._id}'">
+            </div>
+            <div class="for_data">
+                <h3>${q.name}:</h3> 
+                <br> id: <b>${q._id}</b>
+                <br> address: <b>${q.address}</b>
+                <br> city: <b>${q.city}</b>
+                <br> country: <b>${q.country}</b>
+                <br> stars: <b>${q.stars}</b>
+                <br> price per night: <b>${q.price_per_night}$</b>
+                <br> description: <b>${q.description}</b>
+            </div>
         `
         result.appendChild(div)
         const hr = document.createElement("hr")
@@ -39,11 +56,19 @@ async function show(){
             div.style.display = "none"
             hr.style.display = "none"
         }
+
+        
     })
 }
 
+document.getElementById("apply_filters").addEventListener("click", () => {
+    const country = document.getElementById("country_filter").value
+    const stars = document.getElementById("stars_filter").value
+    const priceSort = document.getElementById("price_sort").value
+    show({ country, stars, priceSort })
+})
 
-show();
+show()
 
 const button = document.getElementById("show_more")
 button.addEventListener("click", () => {
@@ -94,7 +119,7 @@ async function show_by_id_or_name(){
         const div = document.createElement("div")
         div.classList.add("hotel_card")
         div.innerHTML = `
-            <div class="for_img"><img src=${image}></div>
+            <div class="for_img"><img src=${image} onclick="window.location.href='/hotel_page?id=${q._id}'"></div>
             <div class="for_data"><h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}$</b> <br> description: <b>${q.description}</b> </div>
         `
         result.appendChild(div)

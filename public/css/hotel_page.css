@@ -1,0 +1,86 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  padding: 15px 30px;
+  background: #222;
+}
+
+header a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.hotel-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  margin-bottom: 200px;
+}
+
+.hotel-card {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+
+.hotel-card img {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.hotel-info h2 {
+  margin-top: 0;
+}
+
+.hotel-info p {
+  margin: 6px 0;
+  font-size: 15px;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error {
+  color: red;
+  font-size: 18px;
+}
+
+.for_book{
+  display: flex;
+  padding: 20px;
+  gap:10px;
+  border: 2px solid black;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.b{
+  border: 2px solid rgb(156, 156, 156);
+  border-radius: 5px;
+  padding-left: 2px;
+  background-color: aliceblue;
+}
+
+.b_btn{
+  background-color: rgb(13, 13, 66);
+  color: white;
+  border: 0;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  height: 30px;
+  width: 100%;
+}

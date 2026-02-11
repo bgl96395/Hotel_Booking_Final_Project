@@ -134,6 +134,39 @@ input{
     margin-left: 635px;
 }
 
+#filters{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 100px;
+    gap: 10px;
+    border: 2px solid rgb(160, 149, 149);
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(250, 250, 250) ;
+    color: black;
+}
+
+#country_filter{
+    border: 1px solid lightgray;
+    background-color: white;
+    border-radius: 5px;
+}
+
+#stars_filter{
+    border-radius: 5px;
+}
+
+#price_sort{
+    border-radius: 5px;
+}
+
+#apply_filters{
+    border-radius: 5px;
+    background-color: rgb(57, 105, 217);
+    color: #ffffff;
+    border: 0;
+}
 
 
 
