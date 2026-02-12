@@ -34,27 +34,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     container.innerHTML = ""
 
     bookings.forEach(booking => {
-      const hotel = hotels.find(h => h._id.toString() === booking.hotel_id.toString()) || {}
+    const hotel = hotels.find(h => h._id.toString() === booking.hotel_id?.toString());
+    const hotelImage = hotel?.image || "/images/default.avif";
+    const hotelName = hotel?.name || "Unknown Hotel";
 
-      const div = document.createElement("div")
-      div.className = "booking_card"
+    const div = document.createElement("div");
+    div.className = "booking_card";
 
-      div.innerHTML = `
-        <div style="display:flex; gap:15px; align-items:center; margin-bottom:15px;">
-          <img src="${hotel.image || "/images/default.avif"}" alt="${hotel.name || "Hotel"}" style="width:250px;height:300px;object-fit:cover;border-radius:6px;">
-          <div>
-            <p><b>Hotel:</b> ${hotel.name || "Unknown Hotel"}</p><hr>
-            <p><b>User full name:</b> ${booking.name}</p><hr>
-            <p><b>Check in:</b> ${new Date(booking.check_in).toLocaleDateString()}</p><hr>
-            <p><b>Check out:</b> ${new Date(booking.check_out).toLocaleDateString()}</p><hr>
-            <p><b>Total Price:</b> ${booking.total_price}$</p><hr>
-            <button class="delete-booking" data-id="${booking._id}"> ${user.role === "admin" ? "Delete" : "Unbook"} </button>
-          </div>
+    div.innerHTML = `
+      <div style="display:flex; gap:15px; align-items:center; margin-bottom:15px;">
+        <img src="${hotelImage}" alt="${hotelName}" style="width:250px;height:300px;object-fit:cover;border-radius:6px;">
+        <div>
+          <p><b>Hotel:</b> ${hotelName}</p><hr>
+          <p><b>User full name:</b> ${booking.name}</p><hr>
+          <p><b>Check in:</b> ${new Date(booking.check_in).toLocaleDateString()}</p><hr>
+          <p><b>Check out:</b> ${new Date(booking.check_out).toLocaleDateString()}</p><hr>
+          <p><b>Total Price:</b> ${booking.total_price}$</p><hr>
+          <button class="delete-booking" data-id="${booking._id}"> ${user.role === "admin" ? "Delete" : "Unbook"} </button>
         </div>
-      `
+      </div>
+    `;
 
-      container.appendChild(div)
-    })
+    container.appendChild(div);
+  });
+
 
     container.addEventListener("click", async (e) => {
       if (!e.target.classList.contains("delete-booking")) {

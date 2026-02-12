@@ -10,27 +10,30 @@ async function check_role(){
     }
 }
 
+let current_page = 1
+let limit = 3
+
+let current_filters = {
+    country: "",
+    stars: "",
+    priceSort: ""
+}
+
 async function show(filters = {}) {
-    const res = await fetch("/api/hotels")
+    const param = new URLSearchParams({
+        page: current_page,
+        limit: limit,
+        country: filters.country || "",
+        stars:filters.stars || "",
+        priceSort: filters.priceSort || ""
+    })
+    const res = await fetch(`/api/hotels?${param}`)
     let data = await res.json()
-
-    if (filters.country) {
-        data = data.filter(h => h.country.includes(filters.country))
-    }
-    if (filters.stars) {
-        data = data.filter(h => h.stars === Number(filters.stars))
-    }
-
-    if (filters.priceSort === "asc") {
-        data.sort((a, b) => a.price_per_night - b.price_per_night)
-    } else if (filters.priceSort === "desc") {
-        data.sort((a, b) => b.price_per_night - a.price_per_night)
-    }
 
     const result = document.getElementById("result")
     result.innerHTML = ""
 
-    data.forEach((q,index) => {
+    data.forEach(q => {
         const image = q.image || "/images/default.avif"
         const div = document.createElement("div")
         div.classList.add("hotel_card")
@@ -52,86 +55,91 @@ async function show(filters = {}) {
         result.appendChild(div)
         const hr = document.createElement("hr")
         result.appendChild(hr)
-        if(index > 2){
-            div.style.display = "none"
-            hr.style.display = "none"
-        }
-
-        
+          
     })
+
+    document.getElementById("prev").disabled = current_page === 1
+    document.getElementById("next").disabled = data.length < limit
 }
 
 document.getElementById("apply_filters").addEventListener("click", () => {
-    const country = document.getElementById("country_filter").value
-    const stars = document.getElementById("stars_filter").value
-    const priceSort = document.getElementById("price_sort").value
-    show({ country, stars, priceSort })
+    current_filters.country = document.getElementById("country_filter").value
+    current_filters.stars = document.getElementById("stars_filter").value
+    current_filters.priceSort = document.getElementById("price_sort").value
+    current_page = 1 
+    show(current_filters)
 })
 
-show()
-
-const button = document.getElementById("show_more")
-button.addEventListener("click", () => {
-    const hidden_div = document.querySelectorAll("#result .hotel_card")
-    const hidden_hr = document.querySelectorAll("#result hr")
-
-    if (button.textContent === "Show more") {
-        hidden_div.forEach(element => element.style.display = "flex")
-        hidden_hr.forEach(hr => hr.style.display = "block")
-        button.textContent = "Hide"
-    } else {
-        hidden_div.forEach((element, index) => {
-            if (index > 2) {
-                element.style.display = "none"
-            }
-        })
-        hidden_hr.forEach((hr, index) => {
-            if (index > 2) {
-                hr.style.display = "none"
-            }
-        })
-        button.textContent = "Show more"
+document.getElementById("prev").addEventListener("click",()=>{
+    if(current_page > 1){
+        current_page--
+        show(current_filters)
     }
 })
 
+document.getElementById("next").addEventListener("click",()=>{
+    current_page++
+    show(current_filters)
+})
+
+show(current_filters)
 
 async function show_by_id_or_name(){
-  const val = document.getElementById("for_search").value
-  if(val === ""){
-    show()
-    return
-  }
-  const res = await fetch("/api/hotels")
-  const data = await res.json()
-
-  const result = document.getElementById("result")
-  result.innerHTML = ""
-
-  data.forEach(q => {
-    if(val === q._id || val === q.name){
-        let image
-        if(q.image){
-            image = q.image
-        }
-        else{
-            image = "/images/default.avif"
-        }
-        const div = document.createElement("div")
-        div.classList.add("hotel_card")
-        div.innerHTML = `
-            <div class="for_img"><img src=${image} onclick="window.location.href='/hotel_page?id=${q._id}'"></div>
-            <div class="for_data"><h3>${q.name}:</h3> <br> id: <b>${q._id}</b><br>address: <b>${q.address}</b> <br> city: <b>${q.city}</b> <br> country: <b>${q.country}</b> <br> stars: <b>${q.stars}</b> </br>  price per night: <b>${q.price_per_night}$</b> <br> description: <b>${q.description}</b> </div>
-        `
-        result.appendChild(div)
-        const hr = document.createElement("hr")
-        result.appendChild(hr)
+    const val = document.getElementById("for_search").value
+    
+    if(val === ""){
+        show(current_filters) 
+        return
     }
-  })
 
-  if(result.innerHTML===""){
-    result.innerHTML = `Hotel not found`
-  }
+    const param = new URLSearchParams({
+        page: 1,      
+        limit: 1000, 
+        country: "",  
+        stars: "",
+        priceSort: ""
+    })
+
+    const res = await fetch(`/api/hotels?${param}`)
+    const data = await res.json()
+
+    const result = document.getElementById("result")
+    result.innerHTML = ""
+
+
+    data.forEach(q => {
+        if(q._id.includes(val) || q.name.toLowerCase().includes(val.toLowerCase())){
+            found = true
+            const image = q.image || "/images/default.avif"
+            const div = document.createElement("div")
+            div.classList.add("hotel_card")
+            div.innerHTML = `
+                <div class="for_img"><img src="${image}" onclick="window.location.href='/hotel_page?id=${q._id}'"></div>
+                <div class="for_data">
+                    <h3>${q.name}:</h3>
+                    <br> id: <b>${q._id}</b>
+                    <br> address: <b>${q.address}</b>
+                    <br> city: <b>${q.city}</b>
+                    <br> country: <b>${q.country}</b>
+                    <br> stars: <b>${q.stars}</b>
+                    <br> price per night: <b>${q.price_per_night}$</b>
+                    <br> description: <b>${q.description}</b>
+                </div>
+            `
+            result.appendChild(div)
+            const hr = document.createElement("hr")
+            result.appendChild(hr)
+        }
+    })
+
+    if(!result){
+        result.innerHTML = `Hotel not found`
+    }
+
+    document.getElementById("prev").disabled = true
+    document.getElementById("next").disabled = true
 }
+
 
 document.getElementById("for_search_2").onclick = show_by_id_or_name
 

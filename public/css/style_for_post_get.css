@@ -63,13 +63,6 @@ img{
     border-top-right-radius: 5px;
 }
 
-#show_more{
-    width: 100%;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    height: 30px;
-}
-
 #form{
     display: flex;
     flex-direction: column;
@@ -138,11 +131,11 @@ input{
     display: flex;
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 100px;
+    margin-bottom: 25px;
     gap: 10px;
-    border: 2px solid rgb(160, 149, 149);
+    border-top: 2px solid rgb(160, 149, 149);
+    border-bottom: 2px solid rgb(160, 149, 149);
     padding: 10px;
-    border-radius: 10px;
     background-color: rgb(250, 250, 250) ;
     color: black;
 }
@@ -166,8 +159,31 @@ input{
     background-color: rgb(57, 105, 217);
     color: #ffffff;
     border: 0;
+    margin-left: 130px;
 }
 
+#pagination{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
 
+.pgn{
+    background: rgba(255, 255, 255, 0.15); 
+    backdrop-filter: blur(10px);                  
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    height: 50px;
+}
+    
+#st{
+    margin-left: 130px;
+}
+
+#ps{
+    margin-left: 130px;
+}
 
 

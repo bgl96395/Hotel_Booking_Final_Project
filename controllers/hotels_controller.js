@@ -3,7 +3,28 @@ const hotel_collection = require("../models/hotel_model")
 
 exports.get_hotels = async (req,res)=>{
   try{
-    const hotel = await hotel_collection().find().toArray()
+    let page = Number(req.query.page) || 1
+    let limit = Number(req.query.limit) || 3
+
+    const skip = (page - 1)*limit
+
+    const filter = {}
+    if(req.query.country && req.query.country !== ""){
+      filter.country = { $regex: req.query.country,$options: "i"}
+    }
+    if(req.query.stars && req.query.stars !== ""){
+      filter.stars = Number(req.query.stars)
+    }
+
+    const sort = {}
+    if(req.query.priceSort === "asc"){
+      sort.price_per_night = 1
+    }
+    if(req.query.priceSort === "desc"){
+      sort.price_per_night = -1
+    }
+
+    const hotel = await hotel_collection().find(filter).sort(sort).skip(skip).limit(limit).toArray()
     res.status(200).json(hotel)
   }catch{
     res.status(500).json({

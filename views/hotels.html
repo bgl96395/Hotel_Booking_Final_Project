@@ -61,15 +61,11 @@
 
     <div class="displaying">    
         <div id="searching"><input type="text" id="for_search" placeholder="id or name:"><button id="for_search_2">Search</button></div>
-        <div id="result"></div>
-        <button id="show_more">Show more</button>
-    </div>
-
-    <div id="filters">
+        <div id="filters">
         <label for="country_filter">Country:</label>
         <input type="text" id="country_filter" placeholder="Enter country">
 
-        <label for="stars_filter">Stars:</label>
+        <label for="stars_filter" id="st">Stars:</label>
         <select id="stars_filter">
             <option value="">All</option>
             <option value="7">7</option>
@@ -81,7 +77,7 @@
             <option value="1">1</option>
         </select>
 
-        <label for="price_sort">Sort by price:</label>
+        <label for="price_sort" id="ps">Sort by price:</label>
         <select id="price_sort">
             <option value="">None</option>
             <option value="asc">Ascending</option>
@@ -90,6 +86,14 @@
 
         <button id="apply_filters">Apply</button>
     </div>
+        <div id="result"></div>
+        <div id="pagination">
+            <button id="prev" class="pgn">Previous</button>
+            <button id="next" class="pgn">Next</button>
+        </div>
+    </div>
+
+    
 
 
     <div class="api">
